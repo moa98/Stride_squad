@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+import 'track.dart'; // Ensure you import your track class
+
+class InformationAboutPathScreen extends StatelessWidget {
+  final track path;
+
+  InformationAboutPathScreen({required this.path});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.pink[50],
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context); // Pop the current screen to go back
+          },
+        ),
+      ),
+      body: Container(
+        color: Colors.pink[50],
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/path.jpg'), // Ensure this image exists
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    left: 16,
+                    bottom: 16,
+                    child: Text(
+                      path.pathId,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Regarding the path',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Starting Point: ${path.startingPoint}\nFinish Point: ${path.finishPoint}\nLength: ${path.length} km\nPopularity: ${path.popularity} %\nDifficulty: ${path.difficultyStars} stars\nCleanliness: ${path.cleanStars} stars\nIncline: ${path.incline}\nSafety: ${path.safety}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Reviews:\n${path.reviews.join('\n')}\n\nMedia:\n${path.media.join('\n')}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add your logic here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                      minimumSize: Size(double.infinity, 50),
+                    ),
+                    child: Text('Take this route', style: TextStyle(fontSize: 16)),
+                  ),
+                  SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: () {
+                      // Add your logic here
+                    },
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      side: BorderSide(color: Colors.pink),
+                    ),
+                    child: Text(
+                      'Share it with friends',
+                      style: TextStyle(color: Colors.pink, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

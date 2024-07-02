@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "536736355710",
+    "project_id": "stride-squad-1eab7",
+    "storage_bucket": "stride-squad-1eab7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536736355710:android:07e171e9786bc0fa250f2f",
+        "android_client_info": {
+          "package_name": "com.example.stride_squad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa4FFe3HYzWBbRqcsaPJO8UB2y5YBddEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536736355710:android:d85edba8d0e845ca250f2f",
+        "android_client_info": {
+          "package_name": "com.example.stridesquad1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa4FFe3HYzWBbRqcsaPJO8UB2y5YBddEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

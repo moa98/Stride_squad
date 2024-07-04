@@ -29,7 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF8E6E9), // Light pink background
+      backgroundColor: Color.fromARGB(255, 255, 255, 255), 
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -45,22 +45,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: 0.75, // Update this value as needed
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                ),
                 SizedBox(height: 20),
                 Text(
                   'Enter your email',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -87,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -114,7 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -152,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -188,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ElevatedButton(
                   onPressed: _signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: const Color.fromARGB(255, 53, 106, 150),
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),

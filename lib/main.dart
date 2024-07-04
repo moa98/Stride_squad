@@ -9,7 +9,7 @@ import 'fittness_level.dart';
 import 'login.dart';
 import 'homepage.dart';
 import 'gender.dart';
-import 'measurements.dart';
+import 'height.dart';
 // Import the new measurements screen
 final storage = FirebaseStorage.instance;
 Future<void> main() async {
@@ -40,10 +40,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(),
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
-        '/gender': (context) => GenderPage(),
-        '/age': (context) => AgePage(),
+        '/gender': (context) => GenderSelectScreen(),
+        '/age': (context) => DatePickerScreen(),
         'fittnes_level': (context) => FitnessLevelPage(),
-        '/measurements': (context) => HeightWeightSelectorScreen(), // Add the new route
+        '/height': (context) => HeightScreen(), // Add the new route
       },
     );
   }

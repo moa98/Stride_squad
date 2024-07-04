@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'InformationAboutPath';
-import 'track.dart'; // Import the track class
+import 'track.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,48 +11,60 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  String locationMessage = 'Current Location of the User';
   List<String> friends = ["Alice", "Bob", "Charlie"];
-  List<track> tracks = [
-    track(
-      pathId: "Track 1",
-      startingPoint: "Point A",
-      finishPoint: "Point B",
-      length: 10,
-      popularity: 75,
-      difficultyStars: 3,
-      cleanStars: 4,
-      incline: 2,
-      safety: 5,
-      reviews: ["Great path!"],
-      media: ["image1.jpg"],
-    ),
-    track(
-      pathId: "Track 2",
-      startingPoint: "Point C",
-      finishPoint: "Point D",
-      length: 15,
-      popularity: 80,
-      difficultyStars: 4,
-      cleanStars: 5,
-      incline: 4,
-      safety: 5,
-      reviews: ["Challenging but fun!"],
-      media: ["image2.jpg"],
-    ),
-    track(
-      pathId: "Track 3",
-      startingPoint: "Point E",
-      finishPoint: "Point F",
-      length: 8,
-      popularity: 60,
-      difficultyStars: 2,
-      cleanStars: 3,
-      incline: 1,
-      safety: 4,
-      reviews: ["Good for beginners."],
-      media: ["image3.jpg"],
-    ),
-  ];
+  List<Track> tracks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTracks();
+  }
+
+  Future<void> fetchTracks() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('tracks').get();
+      setState(() {
+        tracks = snapshot.docs.map((doc) => Track.fromFirestore(doc)).toList();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Getting current location
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
+  void _liveLocation() {
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) {
+      setState(() {
+        locationMessage = 'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+      });
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -115,7 +129,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _navigateToPathInformation(BuildContext context, track selectedPath) {
+  void _navigateToPathInformation(BuildContext context, Track selectedPath) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => InformationAboutPathScreen(path: selectedPath)),
@@ -259,6 +273,33 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                locationMessage,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    Position position = await _getCurrentLocation();
+                    setState(() {
+                      locationMessage = 'Lat: ${position.latitude}, Long: ${position.longitude}';
+                    });
+                    _liveLocation();
+                  } catch (e) {
+                    setState(() {
+                      locationMessage = e.toString();
+                    });
+                  }
+                },
+                child: const Text('Get current location'),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Align(
@@ -276,11 +317,6 @@ class _HomePageState extends State<HomePage> {
           ...tracks.map((path) {
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

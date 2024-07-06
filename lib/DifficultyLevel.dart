@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stridesquad1/GroupAloneScreen.dart';
-import 'NatureCityPage.dart';
 
 class DifficultyLevelScreen extends StatefulWidget {
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stridesquad1/NatureCityPage.dart';
-import 'DifficultyLevel.dart';
 
 
 class GroupAloneScreen extends StatefulWidget {

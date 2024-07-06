@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-import 'InformationAboutPath';
+import 'DifficultyLevel.dart';
+import 'InformationAboutPath.dart';
 import 'track.dart';
 
 class HomePage extends StatefulWidget {
@@ -133,6 +134,13 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => InformationAboutPathScreen(path: selectedPath)),
+    );
+  }
+
+  void _navigateToDifficultyLevelScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DifficultyLevelScreen()),
     );
   }
 
@@ -376,25 +384,47 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildAnotherPage() {
-    return ListView.builder(
-      itemCount: tracks.length,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-          child: ListTile(
-            title: Text(tracks[index].pathId),
-            trailing: IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: () {
-                _shareTrack(tracks[index].pathId);
-              },
-            ),
-            onTap: () {
-              _navigateToPathInformation(context, tracks[index]);
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ListView.builder(
+            itemCount: tracks.length,
+            itemBuilder: (context, index) {
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                child: ListTile(
+                  title: Text(tracks[index].pathId),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () {
+                      _shareTrack(tracks[index].pathId);
+                    },
+                  ),
+                  onTap: () {
+                    _navigateToPathInformation(context, tracks[index]);
+                  },
+                ),
+              );
             },
           ),
-        );
-      },
+        ),
+        Positioned(
+          left: MediaQuery.of(context).size.width / 2 - 70, // Adjust this value to center the button horizontally
+          bottom: 16.0,
+          child: FloatingActionButton.extended(
+            onPressed: () {
+              _navigateToDifficultyLevelScreen(context);
+            },
+            icon: const Icon(Icons.directions_run),
+            label: const Text('Start Run'),
+            backgroundColor: Colors.blueAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            extendedPadding: EdgeInsets.symmetric(horizontal: 20),
+          ),
+        ),
+      ],
     );
   }
 }

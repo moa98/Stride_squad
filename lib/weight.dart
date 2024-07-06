@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_weight_picker/animated_weight_picker.dart';
-import 'age.dart'; 
+import 'age.dart';
 
 class WeightSelectorScreen extends StatefulWidget {
   @override
@@ -23,7 +23,8 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Weight Selector'),
+        title: const Text('Create Account'),
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -34,7 +35,8 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
               const SizedBox(height: 20),
               CircleAvatar(
                 radius: 80,
-                backgroundImage: const AssetImage('assets/female.png'), // Ensure you have this asset
+                backgroundImage: const AssetImage(
+                    'assets/female.png'), // Ensure you have this asset
                 backgroundColor: Colors.grey[200],
               ),
               const SizedBox(height: 40),
@@ -50,7 +52,8 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
               const SizedBox(height: 10),
               Text(
                 '${selectedWeight.toStringAsFixed(1)} kg',
-                style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
               SizedBox(
@@ -60,7 +63,8 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
                   max: maxWeight,
                   onChange: (newValue) {
                     setState(() {
-                      selectedWeight = double.tryParse(newValue.toString()) ?? selectedWeight;
+                      selectedWeight = double.tryParse(newValue.toString()) ??
+                          selectedWeight;
                     });
                   },
                 ),
@@ -71,32 +75,39 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context); // Go back to the previous screen
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DatePickerScreen()),
+                      );
                     },
-                    child: const Text('Previous'),
+                    child: const Text('Continue',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink[300],
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: Color.fromARGB(255, 138, 252, 154),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                     ),
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const DatePickerScreen()),
-                      );
+                         Navigator.pop(context); // Go back to the previous screen
                     },
-                    child: const Text('Continue'),
+                    child: const Text('Previous',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink[300],
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                     ),
                   ),
                 ],

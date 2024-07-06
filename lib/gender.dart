@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'height.dart'; 
+import 'height.dart';
+
 class GenderSelectScreen extends StatefulWidget {
   const GenderSelectScreen({super.key});
 
@@ -62,16 +63,20 @@ class _GenderSelectScreenState extends State<GenderSelectScreen> {
                       ? () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const HeightScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => const HeightScreen()),
                           );
                         }
                       : null,
-                  child: const Text('Continue', style: TextStyle(fontSize: 20)),
+                  child: const Text('Continue',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50), // specific height
+                    minimumSize:
+                        const Size(double.infinity, 50), // specific height
                     backgroundColor: selectedGender != null
-                        ? Colors.pink[300]
-                        : Colors.grey,
+                        ? Color.fromARGB(255, 138, 252, 154)
+                        : const Color.fromARGB(255, 255, 255, 255),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
                     ),
@@ -83,13 +88,17 @@ class _GenderSelectScreenState extends State<GenderSelectScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const HeightScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HeightScreen()),
                     );
                   },
-                  child: const Text('Skip', style: TextStyle(fontSize: 20)),
+                  child: const Text('Skip',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50), // specific height
-                    backgroundColor: const Color.fromARGB(255, 219, 194, 202),
+                    minimumSize:
+                        const Size(double.infinity, 50), // specific height
+                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
                     ),

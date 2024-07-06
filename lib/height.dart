@@ -18,7 +18,7 @@ class _HeightScreenState extends State<HeightScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Account', style: TextStyle(fontSize: 24)),
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -65,27 +65,38 @@ class _HeightScreenState extends State<HeightScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WeightSelectorScreen()), // Ensure WeightSelectorScreen is implemented
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          WeightSelectorScreen()), // Ensure WeightSelectorScreen is implemented
                 );
               },
-              child: const Text('Continue', style: TextStyle(fontSize: 20)),
+              child: const Text('Continue',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.pink,
+                backgroundColor: Color.fromARGB(255, 138, 252, 154),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 20),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-            child: TextButton(
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context); // Navigate back to the previous screen
               },
-              child: const Text('Previous', style: TextStyle(fontSize: 20)),
-              style: TextButton.styleFrom(
+              child: const Text('Previous',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.pink,
-                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 20),
               ),
             ),
           ),

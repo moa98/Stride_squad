@@ -11,69 +11,105 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StrideSquad'),
+        backgroundColor: Colors.white,
         shadowColor: Colors.green,
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blueAccent, Color.fromARGB(255, 156, 221, 95)],
-          ),
-        ),
+        color: Colors.white, // Change background to white
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Welcome! Please log in.',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              Image.asset('assets/Logo.jpg', height: 300), // Logo at the top
+              Expanded(
+                child: SingleChildScrollView(
+                  // Ensure scrolling when keyboard is visible
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Log in',
+                        style: TextStyle(
+                          fontSize: 34, // Increased font size
+                          fontWeight: FontWeight.bold,
+                          color: Colors
+                              .black, // Better contrast with white background
+                        ),
+                      ),
+                      const SizedBox(height: 32), // Increased spacing
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                              fontSize: 20), // Increased label font size
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                20), // Slightly more rounded corners
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                      ),
+                      const SizedBox(height: 24), // Increased spacing
+                      TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                              fontSize: 20), // Increased label font size
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                20), // Slightly more rounded corners
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 24), // Increased spacing
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.white,
-                  filled: true,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.white,
-                  filled: true,
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  String email = emailController.text;
-                  String password = passwordController.text;
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20), // Added padding to bottom
+                child: ElevatedButton(
+                  onPressed: () async {
+                    String email = emailController.text;
+                    String password = passwordController.text;
 
-                  try {
-                    await auth.signInwithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    Navigator.pushReplacementNamed(context, '/home');
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to log in: $e')),
-                    );
-                  }
-                },
-                child: const Text('Log In'),
+                    try {
+                      await auth.signInwithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to log in: $e')),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold), // Increased font size
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(
+                        255, 138, 252, 154), // Styled like previous buttons
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20), // Increased corner radius
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 140, vertical: 20), // Increased padding
+                  ),
+                ),
               ),
             ],
           ),

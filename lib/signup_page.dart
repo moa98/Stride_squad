@@ -11,7 +11,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -29,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -125,7 +126,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     fillColor: Colors.white,
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                       onPressed: () {
                         setState(() {
@@ -163,7 +166,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     fillColor: Colors.white,
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                        _obscureConfirmPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                       onPressed: () {
                         setState(() {
@@ -180,23 +185,29 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 SizedBox(height: 30),
+                SizedBox(
+                  height: 50,
+                ), // Spacer added here
                 ElevatedButton(
                   onPressed: _signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 53, 106, 150),
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    backgroundColor:
+                        Color.fromARGB(255, 138, 252, 154), // Green background
+                    padding: EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(18.0),
                     ),
                   ),
                   child: Text(
                     'Sign up',
                     style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 106, 63, 156), // Purple text
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           ),

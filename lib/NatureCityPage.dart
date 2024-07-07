@@ -6,73 +6,158 @@ class NatureCityPage extends StatefulWidget {
 }
 
 class _NatureCityPageState extends State<NatureCityPage> {
-  String? _selectedOption;
-
-  void _onOptionSelected(String option) {
-    setState(() {
-      _selectedOption = option;
-    });
-  }
-
-  void _onContinuePressed() {
-    // Handle the continue button press
-    if (_selectedOption != null) {
-      print('Selected option: $_selectedOption');
-      // Navigate to the next page or perform the desired action
-    } else {
-      // Show a message to select an option
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select an option')),
-      );
-    }
-  }
+  String selectedOption = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('NatureCity'),
-        centerTitle: true,
+        title: const Text('Running Preference'),
+        backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255), // White background
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Spacer(flex: 1), // Adjust the flex value as needed
             Text(
               'Where do you prefer to run: in nature or in the city?',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24),
             ),
-            SizedBox(height: 40),
-            _buildOptionButton('Nature'),
             SizedBox(height: 20),
-            _buildOptionButton('City'),
-            SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _onContinuePressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.pink,
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                textStyle: TextStyle(fontSize: 16),
-              ),
-              child: Text('Continue'),
+            optionButton(
+              'Nature',
+              'Experience the tranquility of natural surroundings.',
+              'assets/nature.jpg', // Update with your image asset path
             ),
+            optionButton(
+              'City',
+              'Enjoy the energy of an urban environment.',
+              'assets/city.jpg', // Update with your image asset path
+            ),
+            Spacer(flex: 2), // Adjust the flex value as needed
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: selectedOption.isEmpty
+                        ? null
+                        : () {
+                            print('Selected option: $selectedOption');
+                            // Navigate to the next page or perform the desired action
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(
+                          255, 138, 252, 154), // Green background
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 120, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Continue',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 106, 63, 156),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: BorderSide(
+                        color:
+                            Color.fromARGB(255, 106, 63, 156), // Purple border
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 120, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Previous',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 106, 63, 156),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOptionButton(String option) {
-    return ElevatedButton(
-      onPressed: () => _onOptionSelected(option),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: _selectedOption == option ? Colors.white : Colors.black, backgroundColor: _selectedOption == option ? Colors.pink : Colors.grey[200],
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-        textStyle: TextStyle(fontSize: 16),
+  Widget optionButton(String option, String description, String imagePath) {
+    bool isSelected = selectedOption == option;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedOption = option;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+        padding: const EdgeInsets.all(16.0),
+        constraints: BoxConstraints(minWidth: double.infinity, minHeight: 120),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Color.fromARGB(255, 138, 252, 154)
+              : Colors.grey[200],
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 138, 252, 154).withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                  ),
+                ]
+              : [],
+        ),
+        child: Row(
+          children: [
+            Image.asset(imagePath, height: 80, width: 80),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    option,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.black : Colors.grey[700],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Text(option),
     );
   }
 }

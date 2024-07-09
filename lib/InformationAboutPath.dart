@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'track.dart'; 
+import 'track.dart';
 
 class InformationAboutPathScreen extends StatelessWidget {
   final Track path;
@@ -69,10 +69,8 @@ class InformationAboutPathScreen extends StatelessWidget {
                     SizedBox(height: 8),
                     _buildStarRow('Difficulty:', path.difficultyStars.toInt()),
                     _buildStarRow('Cleanliness:', path.cleanStars.toInt()),
-                    Text(
-                      'Incline: ${path.incline}\nSafety: ${path.safety}',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    _buildStarRow('Incline:', path.incline.toInt()),
+                    _buildStarRow('Safety:', path.safety.toInt()),
                     SizedBox(height: 8),
                     Text(
                       'Reviews:',

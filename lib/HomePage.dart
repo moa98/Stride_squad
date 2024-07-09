@@ -149,6 +149,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StrideSquad'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person_add),
+            onPressed: _addFriend,
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -223,9 +229,13 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addFriend,
-        child: const Icon(Icons.add),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          _navigateToDifficultyLevelScreen(context);
+        },
+        icon: const Icon(Icons.directions_run),
+        label: const Text('Start Run'),
         backgroundColor: Colors.blueAccent,
       ),
     );
@@ -406,22 +416,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
-          ),
-        ),
-        Positioned(
-          left: MediaQuery.of(context).size.width / 2 - 70, // Adjust this value to center the button horizontally
-          bottom: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              _navigateToDifficultyLevelScreen(context);
-            },
-            icon: const Icon(Icons.directions_run),
-            label: const Text('Start Run'),
-            backgroundColor: Colors.blueAccent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            extendedPadding: EdgeInsets.symmetric(horizontal: 20),
           ),
         ),
       ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stridesquad1/routeMap.dart';
+// ignore: duplicate_import
+import 'routeMap.dart'; // Import the RouteMapScreen
 
 class NatureCityPage extends StatefulWidget {
   @override
@@ -47,7 +50,13 @@ class _NatureCityPageState extends State<NatureCityPage> {
                         ? null
                         : () {
                             print('Selected option: $selectedOption');
-                            // Navigate to the next page or perform the desired action
+                            // Navigate to the RouteMapScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(),
+                              ),
+                            );
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(

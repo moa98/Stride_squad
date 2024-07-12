@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 import 'track.dart';
 
 class InformationAboutPathScreen extends StatefulWidget {
@@ -7,24 +10,71 @@ class InformationAboutPathScreen extends StatefulWidget {
   InformationAboutPathScreen({required this.path});
 
   @override
-  _InformationAboutPathScreenState createState() =>
-      _InformationAboutPathScreenState();
+  _InformationAboutPathScreenState createState() => _InformationAboutPathScreenState();
 }
 
-class _InformationAboutPathScreenState
-    extends State<InformationAboutPathScreen> {
+class _InformationAboutPathScreenState extends State<InformationAboutPathScreen> {
   final TextEditingController _reviewController = TextEditingController();
+  VideoPlayerController? _videoController;
+  List<XFile> _mediaFiles = [];
+  int _likes = 0;  // Initialization of likes counter
+  int _dislikes = 0;  // Initialization of dislikes counter
+  final PageController _pageController = PageController();
 
   @override
   void dispose() {
     _reviewController.dispose();
+    _videoController?.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
-  void _addReview() {
+  void _pickMedia() async {
+    final ImagePicker _picker = ImagePicker();
+    final List<XFile>? selectedFiles = await _picker.pickMultiImage();
+    if (selectedFiles != null && selectedFiles.isNotEmpty) {
+      setState(() {
+        _mediaFiles.addAll(selectedFiles);
+        _loadMedia();
+      });
+    }
+  }
+
+  void _loadMedia() {
+    _mediaFiles.forEach((file) async {
+      if (file.mimeType?.startsWith('video/') ?? false) {
+        _videoController = VideoPlayerController.file(File(file.path))
+          ..initialize().then((_) {
+            setState(() {});
+          });
+      }
+    });
+  }
+
+  Widget _mediaBuilder(BuildContext context, int index) {
+    XFile file = _mediaFiles[index];
+    bool isVideo = file.mimeType?.startsWith('video/') ?? false;
+    if (isVideo) {
+      return _videoController != null && _videoController!.value.isInitialized
+          ? AspectRatio(
+              aspectRatio: _videoController!.value.aspectRatio,
+              child: VideoPlayer(_videoController!),
+            )
+          : Container(color: Colors.black);
+    } else {
+      return Image.file(File(file.path), fit: BoxFit.cover);
+    }
+  }
+
+  void _incrementLikes() {
     setState(() {
-      widget.path.reviews.add(_reviewController.text);
-      _reviewController.clear();
+      _likes++;
+    });
+  }
+
+  void _incrementDislikes() {
+    setState(() {
+      _dislikes++;
     });
   }
 
@@ -32,18 +82,21 @@ class _InformationAboutPathScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Colors.white, // Change AppBar background color to white
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context); // Pop the current screen to go back
-          },
+          onPressed: () => Navigator.pop(context),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add_a_photo, color: Colors.black),
+            onPressed: _pickMedia,
+          ),
+        ],
       ),
       body: Container(
-        color: Colors.white, // Change the background color to white
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             Expanded(
@@ -53,31 +106,43 @@ class _InformationAboutPathScreenState
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(16.0), // Set the radius here
-                        child: Container(
-                          height: 250, // Reduced height of the image container
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/path.jpg'), // Ensure this image exists
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Positioned(
-                                right: 16,
-                                top: 16,
-                                child: IconButton(
-                                  icon: Icon(Icons.share, color: Colors.white),
-                                  onPressed: () {
-                                    // Add your share logic here
-                                  },
-                                ),
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              height: 250,
+                              child: PageView.builder(
+                                controller: _pageController,
+                                itemCount: _mediaFiles.length,
+                                itemBuilder: (context, index) => _mediaBuilder(context, index),
                               ),
-                            ],
-                          ),
+                            ),
+                            Positioned(
+                              left: 10,
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_back_ios, size: 30, color: Colors.white),
+                                onPressed: () {
+                                  if (_pageController.page! > 0) {
+                                    _pageController.previousPage(
+                                        duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                                  }
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              right: 10,
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_forward_ios, size: 30, color: Colors.white),
+                                onPressed: () {
+                                  if (_pageController.page! < _mediaFiles.length - 1) {
+                                    _pageController.nextPage(
+                                        duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -88,28 +153,56 @@ class _InformationAboutPathScreenState
                         children: [
                           Text(
                             'Regarding the path',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
                           Text(
-                            'Length: ${widget.path.length} km',
+                            'Likes: $_likes   Dislikes: $_dislikes',
                             style: TextStyle(fontSize: 16),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.thumb_up, color: Colors.green),
+                                onPressed: _incrementLikes,
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.thumb_down, color: Colors.red),
+                                onPressed: _incrementDislikes,
+                              ),
+                            ],
+                          ),
                           SizedBox(height: 8),
-                          _buildStarRow('Difficulty:',
-                              widget.path.difficultyStars.toInt()),
-                          _buildStarRow(
-                              'Incline:', widget.path.incline.toInt()),
-                          _buildStarRow('Safety:', widget.path.safety.toInt()),
+                          TextField(
+                            controller: _reviewController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Write a review',
+                            ),
+                            maxLines: 5,
+                          ),
                           SizedBox(height: 8),
-                          Text(
-                            'Reviews:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.path.reviews.add(_reviewController.text);
+                                  _reviewController.clear();
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromARGB(255, 138, 252, 154),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              ),
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           ...widget.path.reviews
@@ -118,38 +211,6 @@ class _InformationAboutPathScreenState
                                     style: TextStyle(fontSize: 16),
                                   ))
                               .toList(),
-                          SizedBox(height: 16),
-                          TextField(
-                            controller: _reviewController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Write a review',
-                            ),
-                            maxLines: 5, // Increased max lines
-                          ),
-                          SizedBox(height: 8),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton(
-                              onPressed: _addReview,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromARGB(255, 138, 252, 154),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 12),
-                              ),
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: 18, // Decreased font size
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -157,54 +218,14 @@ class _InformationAboutPathScreenState
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Add your logic here
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(
-                      255, 138, 252, 154), // Styled like previous buttons
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(20), // Increased corner radius
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 80, vertical: 20), // Increased padding
-                ),
-                child: Text(
-                  'Take this route',
-                  style: TextStyle(
-                    fontSize: 24, // Increased font size
-                    fontWeight: FontWeight.bold, // Bold text
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStarRow(String label, int stars) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(width: 8),
-        Row(
-          children: List.generate(5, (index) {
-            return Icon(
-              index < stars ? Icons.star : Icons.star_border,
-              color: Colors.yellow[700],
-            );
-          }),
-        ),
-      ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pickMedia,
+        tooltip: 'Add Photo/Video',
+        child: Icon(Icons.add_a_photo),
+      ),
     );
   }
 }

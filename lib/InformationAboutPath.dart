@@ -1,16 +1,39 @@
 import 'package:flutter/material.dart';
 import 'track.dart';
 
-class InformationAboutPathScreen extends StatelessWidget {
+class InformationAboutPathScreen extends StatefulWidget {
   final Track path;
 
   InformationAboutPathScreen({required this.path});
 
   @override
+  _InformationAboutPathScreenState createState() =>
+      _InformationAboutPathScreenState();
+}
+
+class _InformationAboutPathScreenState
+    extends State<InformationAboutPathScreen> {
+  final TextEditingController _reviewController = TextEditingController();
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  void _addReview() {
+    setState(() {
+      widget.path.reviews.add(_reviewController.text);
+      _reviewController.clear();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink[50],
+        backgroundColor:
+            Colors.white, // Change AppBar background color to white
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -19,111 +42,147 @@ class InformationAboutPathScreen extends StatelessWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.pink[50],
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/path.jpg'), // Ensure this image exists
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Stack(
+      body: Container(
+        color: Colors.white, // Change the background color to white
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: <Widget>[
-                    Positioned(
-                      left: 16,
-                      bottom: 16,
-                      child: Text(
-                        path.pathId,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(16.0), // Set the radius here
+                        child: Container(
+                          height: 250, // Reduced height of the image container
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/path.jpg'), // Ensure this image exists
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned(
+                                right: 16,
+                                top: 16,
+                                child: IconButton(
+                                  icon: Icon(Icons.share, color: Colors.white),
+                                  onPressed: () {
+                                    // Add your share logic here
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Regarding the path',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Length: ${widget.path.length} km',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          _buildStarRow('Difficulty:',
+                              widget.path.difficultyStars.toInt()),
+                          _buildStarRow(
+                              'Incline:', widget.path.incline.toInt()),
+                          _buildStarRow('Safety:', widget.path.safety.toInt()),
+                          SizedBox(height: 8),
+                          Text(
+                            'Reviews:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          ...widget.path.reviews
+                              .map((review) => Text(
+                                    review,
+                                    style: TextStyle(fontSize: 16),
+                                  ))
+                              .toList(),
+                          SizedBox(height: 16),
+                          TextField(
+                            controller: _reviewController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Write a review',
+                            ),
+                            maxLines: 5, // Increased max lines
+                          ),
+                          SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: ElevatedButton(
+                              onPressed: _addReview,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(255, 138, 252, 154),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                              ),
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  fontSize: 18, // Decreased font size
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Regarding the path',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Starting Point: ${path.startingPoint}\nFinish Point: ${path.finishPoint}\nLength: ${path.length} km\nPopularity: ${path.popularity} %',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 8),
-                    _buildStarRow('Difficulty:', path.difficultyStars.toInt()),
-                    _buildStarRow('Cleanliness:', path.cleanStars.toInt()),
-                    _buildStarRow('Incline:', path.incline.toInt()),
-                    _buildStarRow('Safety:', path.safety.toInt()),
-                    SizedBox(height: 8),
-                    Text(
-                      'Reviews:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    ...path.reviews.map((review) => Text(
-                      review,
-                      style: TextStyle(fontSize: 16),
-                    )).toList(),
-                    SizedBox(height: 16),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Write a review',
-                      ),
-                      maxLines: 3,
-                    ),
-                  ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Add your logic here
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(
+                      255, 138, 252, 154), // Styled like previous buttons
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(20), // Increased corner radius
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 80, vertical: 20), // Increased padding
+                ),
+                child: Text(
+                  'Take this route',
+                  style: TextStyle(
+                    fontSize: 24, // Increased font size
+                    fontWeight: FontWeight.bold, // Bold text
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Add your logic here
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
-                        minimumSize: Size(double.infinity, 50),
-                      ),
-                      child: Text('Take this route', style: TextStyle(fontSize: 16)),
-                    ),
-                    SizedBox(height: 16),
-                    OutlinedButton(
-                      onPressed: () {
-                        // Add your logic here
-                      },
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
-                        side: BorderSide(color: Colors.pink),
-                      ),
-                      child: Text(
-                        'Share it with friends',
-                        style: TextStyle(color: Colors.pink, fontSize: 16),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

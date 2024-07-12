@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Track {
   final String pathId;
+  final String Name;
   final String startingPoint;
   final String finishPoint;
   final int length;
@@ -14,6 +15,7 @@ class Track {
   final List<String> media;
 
   Track({
+    required this.Name,
     required this.pathId,
     required this.startingPoint,
     required this.finishPoint,
@@ -31,6 +33,7 @@ class Track {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Track(
       pathId: data['pathId'] ?? '',
+      Name: data['Name'] ?? '',
       startingPoint: data['startingPoint'] ?? '',
       finishPoint: data['finishPoint'] ?? '',
       length: _toInt(data['length']),
@@ -47,6 +50,7 @@ class Track {
   Map<String, dynamic> toFirestore() {
     return {
       'pathId': pathId,
+      'Name': Name,
       'startingPoint': startingPoint,
       'finishPoint': finishPoint,
       'length': length,

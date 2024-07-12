@@ -42,6 +42,8 @@ dependencies:
   google_maps_flutter: ^2.0.6
   #location: ^4.3.0 #for location 
   geolocator: ^8.2.1 #for location
+  image_picker: ^0.8.5+3
+  video_player: ^2.2.14
 
 
 

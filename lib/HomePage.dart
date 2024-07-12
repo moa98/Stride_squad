@@ -24,7 +24,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchTracks() async {
     try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('tracks').get();
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('tracks').get();
       setState(() {
         tracks = snapshot.docs.map((doc) => Track.fromFirestore(doc)).toList();
       });
@@ -48,10 +49,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   void _liveLocation() {
@@ -62,7 +65,8 @@ class _HomePageState extends State<HomePage> {
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position position) {
       setState(() {
-        locationMessage = 'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+        locationMessage =
+            'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
       });
     });
   }
@@ -120,7 +124,8 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Shared $track with ${friends[index]}')),
+                  SnackBar(
+                      content: Text('Shared $track with ${friends[index]}')),
                 );
               },
             );
@@ -133,7 +138,8 @@ class _HomePageState extends State<HomePage> {
   void _navigateToPathInformation(BuildContext context, Track selectedPath) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => InformationAboutPathScreen(path: selectedPath)),
+      MaterialPageRoute(
+          builder: (context) => InformationAboutPathScreen(path: selectedPath)),
     );
   }
 
@@ -165,7 +171,10 @@ class _HomePageState extends State<HomePage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.blueAccent, Color.fromARGB(255, 156, 221, 95)],
+                  colors: [
+                    Colors.blueAccent,
+                    Color.fromARGB(255, 156, 221, 95)
+                  ],
                 ),
               ),
               child: Text(
@@ -203,13 +212,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blueAccent, Color.fromARGB(255, 156, 221, 95)],
-          ),
-        ),
+        color: Colors.white, // Set the background color to white
         child: SafeArea(
           child: _selectedIndex == 0 ? buildHomePage() : buildAnotherPage(),
         ),
@@ -236,7 +239,7 @@ class _HomePageState extends State<HomePage> {
         },
         icon: const Icon(Icons.directions_run),
         label: const Text('Start Run'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color.fromARGB(255, 138, 252, 154),
       ),
     );
   }
@@ -254,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -265,6 +268,14 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
             ),
             child: Column(
               children: [
@@ -286,6 +297,7 @@ class _HomePageState extends State<HomePage> {
                   "35 km done, 15 km left",
                   style: TextStyle(
                     fontSize: 16,
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -297,6 +309,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 locationMessage,
                 textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -304,7 +317,8 @@ class _HomePageState extends State<HomePage> {
                   try {
                     Position position = await _getCurrentLocation();
                     setState(() {
-                      locationMessage = 'Lat: ${position.latitude}, Long: ${position.longitude}';
+                      locationMessage =
+                          'Lat: ${position.latitude}, Long: ${position.longitude}';
                     });
                     _liveLocation();
                   } catch (e) {
@@ -313,6 +327,9 @@ class _HomePageState extends State<HomePage> {
                     });
                   }
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 138, 252, 154),
+                ),
                 child: const Text('Get current location'),
               ),
               const SizedBox(height: 20),
@@ -327,14 +344,28 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
             ),
           ),
           ...tracks.map((path) {
             return Container(
-              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              margin:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -346,6 +377,7 @@ class _HomePageState extends State<HomePage> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       Text(
@@ -394,31 +426,80 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildAnotherPage() {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: ListView.builder(
-            itemCount: tracks.length,
-            itemBuilder: (context, index) {
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                child: ListTile(
-                  title: Text(tracks[index].pathId),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.share),
-                    onPressed: () {
-                      _shareTrack(tracks[index].pathId);
-                    },
-                  ),
-                  onTap: () {
+    return Positioned.fill(
+      child: ListView.builder(
+        itemCount: tracks.length,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tracks[index].pathId,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      "${tracks[index].startingPoint} to ${tracks[index].finishPoint}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      "${tracks[index].length} km",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      "Popularity: ${tracks[index].popularity}%",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      "Difficulty: ${tracks[index].difficultyStars} stars",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: () {
                     _navigateToPathInformation(context, tracks[index]);
                   },
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

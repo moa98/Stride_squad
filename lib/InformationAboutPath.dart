@@ -12,10 +12,12 @@ class InformationAboutPathScreen extends StatefulWidget {
   InformationAboutPathScreen({required this.path});
 
   @override
-  _InformationAboutPathScreenState createState() => _InformationAboutPathScreenState();
+  _InformationAboutPathScreenState createState() =>
+      _InformationAboutPathScreenState();
 }
 
-class _InformationAboutPathScreenState extends State<InformationAboutPathScreen> {
+class _InformationAboutPathScreenState
+    extends State<InformationAboutPathScreen> {
   VideoPlayerController? _videoController;
   List<String> _mediaUrls = [];
   int _likes = 0;
@@ -78,8 +80,11 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   void _loadMedia() async {
-    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-        await FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId).get();
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot = await FirebaseFirestore
+        .instance
+        .collection('tracks')
+        .doc(widget.path.pathId)
+        .get();
 
     if (docSnapshot.exists) {
       setState(() {
@@ -90,8 +95,11 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   void _loadLikesAndDislikes() async {
-    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-        await FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId).get();
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot = await FirebaseFirestore
+        .instance
+        .collection('tracks')
+        .doc(widget.path.pathId)
+        .get();
 
     if (docSnapshot.exists) {
       setState(() {
@@ -107,9 +115,7 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
     });
     DocumentReference trackRef =
         FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId);
-    await trackRef.update({
-      "likes": _likes
-    });
+    await trackRef.update({"likes": _likes});
   }
 
   void _incrementDislikes() async {
@@ -118,9 +124,28 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
     });
     DocumentReference trackRef =
         FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId);
-    await trackRef.update({
-      "dislikes": _dislikes
-    });
+    await trackRef.update({"dislikes": _dislikes});
+  }
+
+  void _previewTrail() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Trail Preview'),
+          content: Text(
+              'Explore this 2.6-km out-and-back trail near Haifa, Haifa. Generally considered an easy route, it takes an average of 48 min to complete. This trail is great for running and walking, and it\'s unlikely you\'ll encounter many other people while exploring. The trail is open year-round and is beautiful to visit anytime. Dogs are welcome, but must be on a leash.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _mediaBuilder(BuildContext context, int index) {
@@ -236,6 +261,11 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
                           ),
                           SizedBox(height: 8),
                           Text(
+                            'Explore this 2.6-km out-and-back trail near Haifa, Haifa. Generally considered an easy route, it takes an average of 48 min to complete. This trail is great for running and walking, and it\'s unlikely you\'ll encounter many other people while exploring. The trail is open year-round and is beautiful to visit anytime. Dogs are welcome, but must be on a leash.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
                             'Likes: $_likes   Dislikes: $_dislikes',
                             style: TextStyle(fontSize: 16),
                           ),
@@ -270,6 +300,16 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
                     ),
                   ],
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: _previewTrail,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 128, 209, 131),
+                ),
+                child: Text('Preview Trail'),
               ),
             ),
           ],

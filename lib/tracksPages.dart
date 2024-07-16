@@ -4,12 +4,12 @@ import 'DifficultyLevel.dart';
 import 'InformationAboutPath.dart';
 import 'track.dart';
 
-class tracksPage extends StatefulWidget {
+class TracksPage extends StatefulWidget {
   @override
-  _tracksPageState createState() => _tracksPageState();
+  _TracksPageState createState() => _TracksPageState();
 }
 
-class _tracksPageState extends State<tracksPage> {
+class _TracksPageState extends State<TracksPage> {
   List<String> friends = ["Alice", "Bob", "Charlie"];
   List<Track> tracks = [];
 
@@ -42,6 +42,7 @@ class _tracksPageState extends State<tracksPage> {
           IconButton(
             icon: const Icon(Icons.person_add),
             onPressed: _addFriend,
+            iconSize: 35, // Making the icon larger
           ),
         ],
       ),
@@ -99,7 +100,7 @@ class _tracksPageState extends State<tracksPage> {
                     children: [
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/profile_picture.jpg'),
+                            AssetImage('assets/female.jpg'),
                         radius: 30,
                       ),
                       SizedBox(width: 10),
@@ -187,7 +188,7 @@ class _tracksPageState extends State<tracksPage> {
                         'assets/path.jpg', // Update with appropriate image path
                     title: track.Name,
                     location: "${track.length} km",
-                    rating: 5, // Update with actual rating if available
+                    rating: track.popularity, // Update with actual rating if available
                   );
                 }).toList(),
               ],
@@ -261,7 +262,7 @@ class CategoryTab extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8.0),
       child: Chip(
         label: Text(label),
-        backgroundColor: isSelected ? Colors.pink : Colors.grey[200],
+        backgroundColor: isSelected ? const Color.fromARGB(255, 138, 252, 154) : Colors.grey[200],
         labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
       ),
     );
@@ -353,9 +354,14 @@ class PopularPathCard extends StatelessWidget {
                         style: TextStyle(fontSize: 12, color: Colors.grey)),
                     Row(
                       children: List.generate(
-                          rating,
-                          (index) =>
-                              Icon(Icons.star, color: Colors.amber, size: 16)),
+                          5,
+                          (index) => Icon(
+                                index < rating
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                color: Colors.amber,
+                                size: 16,
+                              )),
                     ),
                   ],
                 ),
@@ -367,5 +373,3 @@ class PopularPathCard extends StatelessWidget {
     );
   }
 }
-
-

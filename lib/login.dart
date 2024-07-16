@@ -100,8 +100,7 @@ class LoginPage extends StatelessWidget {
                         fontWeight: FontWeight.bold), // Increased font size
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(
-                        255, 138, 252, 154), // Styled like previous buttons
+                    backgroundColor: Color.fromARGB(255, 138, 252, 154), // Styled like previous buttons
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(20), // Increased corner radius

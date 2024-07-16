@@ -52,7 +52,7 @@ class _NatureCityPageState extends State<NatureCityPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => tracksPage(),
+                                builder: (context) => TracksPage(),
                               ),
                             );
                           },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stridesquad1/routeMap.dart';
 import 'DifficultyLevel.dart';
 import 'InformationAboutPath.dart';
 import 'track.dart';
@@ -29,6 +30,13 @@ class _TracksPageState extends State<TracksPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void _navigateToRouteMapScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RouteMapScreen()),
+    );
   }
 
   @override
@@ -189,6 +197,7 @@ class _TracksPageState extends State<TracksPage> {
                     title: track.Name,
                     location: "${track.length} km",
                     rating: track.popularity, // Update with actual rating if available
+                    onTap: () => _navigateToRouteMapScreen(context),
                   );
                 }).toList(),
               ],
@@ -318,56 +327,61 @@ class PopularPathCard extends StatelessWidget {
   final String title;
   final String location;
   final int rating;
+  final VoidCallback onTap;
 
   PopularPathCard(
       {required this.imagePath,
       required this.title,
       required this.location,
-      required this.rating});
+      required this.rating,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20)),
-              child: Image.asset(imagePath,
-                  width: 100, height: 80, fit: BoxFit.cover),
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text(location,
-                        style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    Row(
-                      children: List.generate(
-                          5,
-                          (index) => Icon(
-                                index < rating
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: Colors.amber,
-                                size: 16,
-                              )),
-                    ),
-                  ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20)),
+                child: Image.asset(imagePath,
+                    width: 100, height: 80, fit: BoxFit.cover),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(location,
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Row(
+                        children: List.generate(
+                            5,
+                            (index) => Icon(
+                                  index < rating
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  color: Colors.amber,
+                                  size: 16,
+                                )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class RouteMapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,38 +12,16 @@ class RouteMapScreen extends StatelessWidget {
         children: [
           UserInfoSection(),
           Expanded(
-            child: Stack(
-              children: [
-                Container(
-                  color: Colors.grey[200], // Placeholder for the map
-                  child: Center(child: Text('Map Placeholder')),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  'assets/technion_1.png', // Update with the appropriate image path
+                  fit: BoxFit.contain,
                 ),
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(Icons.gps_fixed, color: Colors.green),
-                        SizedBox(height: 4),
-                        Text('GPS'),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           RouteStatsSection(),
@@ -75,11 +52,11 @@ class UserInfoSection extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                'Running at Brisbane Riverwalk',
+                'Running at Technion 1',
                 style: TextStyle(color: Colors.grey[600]),
               ),
               Text(
-                'Friday 23 | 10:00am',
+                'Tuesday 16 | 18:26am',
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ],
@@ -103,16 +80,14 @@ class RouteStatsSection extends StatelessWidget {
             style: TextStyle(color: Colors.grey[600]),
           ),
           Text(
-            '01:09:44',
+            '00:12:44',
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              StatItem(icon: Icons.directions_run, value: '10.9 km'),
-              StatItem(icon: Icons.local_fire_department, value: '539 kcal'),
-              StatItem(icon: Icons.flash_on, value: '12.3 km/hr'),
+              StatItem(icon: Icons.directions_run, value: '0.9 km'),
             ],
           ),
         ],

@@ -6,16 +6,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'track.dart';
 
-class InformationAboutPathScreen extends StatefulWidget {
+class PostRun extends StatefulWidget {
   final Track path;
 
-  InformationAboutPathScreen({required this.path});
+  PostRun({required this.path});
 
   @override
-  _InformationAboutPathScreenState createState() => _InformationAboutPathScreenState();
+  _PostRunState createState() => _PostRunState();
 }
 
-class _InformationAboutPathScreenState extends State<InformationAboutPathScreen> {
+class _PostRunState extends State<PostRun> {
+  final TextEditingController _reviewController = TextEditingController();
   VideoPlayerController? _videoController;
   List<String> _mediaUrls = [];
   int _likes = 0;
@@ -29,13 +30,8 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadLikesAndDislikes();
-  }
-
-  @override
   void dispose() {
+    _reviewController.dispose();
     _videoController?.dispose();
     _pageController.dispose();
     super.dispose();
@@ -59,9 +55,9 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   Future<String> _uploadMediaFile(XFile file) async {
-    Reference storageRef = FirebaseStorage.instance
-        .ref()
-        .child("tracks/${widget.path.pathId}/${file.name}");
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference storageRef =
+        storage.ref().child("tracks/${widget.path.pathId}/${file.name}");
     UploadTask uploadTask = storageRef.putFile(File(file.path));
 
     TaskSnapshot taskSnapshot = await uploadTask;
@@ -69,8 +65,9 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   Future<void> _saveMediaUrlToFirestore(String downloadUrl) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference trackRef =
-        FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId);
+        firestore.collection('tracks').doc(widget.path.pathId);
 
     await trackRef.update({
       "mediaUrls": FieldValue.arrayUnion([downloadUrl])
@@ -78,8 +75,9 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
   }
 
   void _loadMedia() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-        await FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId).get();
+        await firestore.collection('tracks').doc(widget.path.pathId).get();
 
     if (docSnapshot.exists) {
       setState(() {
@@ -87,40 +85,6 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
         print('Loaded media URLs: $_mediaUrls');
       });
     }
-  }
-
-  void _loadLikesAndDislikes() async {
-    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-        await FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId).get();
-
-    if (docSnapshot.exists) {
-      setState(() {
-        _likes = docSnapshot.data()?['likes'] ?? 0;
-        _dislikes = docSnapshot.data()?['dislikes'] ?? 0;
-      });
-    }
-  }
-
-  void _incrementLikes() async {
-    setState(() {
-      _likes++;
-    });
-    DocumentReference trackRef =
-        FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId);
-    await trackRef.update({
-      "likes": _likes
-    });
-  }
-
-  void _incrementDislikes() async {
-    setState(() {
-      _dislikes++;
-    });
-    DocumentReference trackRef =
-        FirebaseFirestore.instance.collection('tracks').doc(widget.path.pathId);
-    await trackRef.update({
-      "dislikes": _dislikes
-    });
   }
 
   Widget _mediaBuilder(BuildContext context, int index) {
@@ -142,6 +106,18 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
     } else {
       return Image.network(url, fit: BoxFit.cover);
     }
+  }
+
+  void _incrementLikes() {
+    setState(() {
+      _likes++;
+    });
+  }
+
+  void _incrementDislikes() {
+    setState(() {
+      _dislikes++;
+    });
   }
 
   @override
@@ -253,12 +229,41 @@ class _InformationAboutPathScreenState extends State<InformationAboutPathScreen>
                             ],
                           ),
                           SizedBox(height: 8),
-                          Text(
-                            'Reviews:',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                          TextField(
+                            controller: _reviewController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Write a review',
+                            ),
+                            maxLines: 5,
                           ),
                           SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.path.reviews
+                                      .add(_reviewController.text);
+                                  _reviewController.clear();
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(255, 138, 252, 154),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                              ),
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
                           ...widget.path.reviews
                               .map((review) => Text(
                                     review,

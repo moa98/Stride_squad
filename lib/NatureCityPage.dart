@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stridesquad1/routeMap.dart';
-// ignore: duplicate_import
-import 'routeMap.dart'; // Import the RouteMapScreen
+import 'package:stridesquad1/tracksPages.dart';
 
 class NatureCityPage extends StatefulWidget {
   @override
@@ -33,14 +31,14 @@ class _NatureCityPageState extends State<NatureCityPage> {
             optionButton(
               'Nature',
               'Experience the tranquility of natural surroundings.',
-              'assets/nature.jpg', // Update with your image asset path
+              'assets/nature.jpg', 
             ),
             optionButton(
               'City',
               'Enjoy the energy of an urban environment.',
-              'assets/city.jpg', // Update with your image asset path
+              'assets/city.jpg', 
             ),
-            Spacer(flex: 2), // Adjust the flex value as needed
+            Spacer(flex: 2), 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Column(
@@ -54,7 +52,7 @@ class _NatureCityPageState extends State<NatureCityPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RouteMapScreen(),
+                                builder: (context) => tracksPage(),
                               ),
                             );
                           },

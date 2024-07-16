@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'DifficultyLevel.dart';
 import 'InformationAboutPath.dart';
 import 'track.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'StrideSquad',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: HomePage(),
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -36,10 +56,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StrideSquad'),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255), // Darker green color
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person_add),
             onPressed: _addFriend,
+            iconSize: 35, // Making the icon larger
           ),
         ],
       ),
@@ -89,20 +111,8 @@ class _HomePageState extends State<HomePage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Hello Marah",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 16.0),
+                _buildProfileSection(),
                 Container(
                   margin: const EdgeInsets.all(16.0),
                   padding: const EdgeInsets.all(16.0),
@@ -131,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                       LinearProgressIndicator(
                         value: 35 / 50,
                         backgroundColor: Colors.grey[300],
-                        color: Colors.green[800],
+                        color: Color.fromRGBO(35, 47, 62, 1), // Darker green color
                       ),
                       const SizedBox(height: 5),
                       const Text(
@@ -152,9 +162,9 @@ class _HomePageState extends State<HomePage> {
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.green[800],
+                      backgroundColor: Color.fromARGB(255, 138, 252, 154),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                       textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -177,13 +187,42 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 ...tracks.map((track) {
-                  return ListTile(
-                    title: Text(track.Name),
-                    subtitle: Text("${track.length} km"),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      _navigateToPathInformation(context, track);
-                    },
+                  return Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.asset(
+                          'assets/path.jpg', // Use the correct path to your asset image
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      title: Text(track.Name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${track.length} km"),
+                          Row(
+                            children: List.generate(5, (index) {
+                              return Icon(
+                                index < track.popularity ? Icons.star : Icons.star_border,
+                                color: Colors.yellow,
+                                size: 16.0,
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                      trailing: Icon(Icons.chevron_right),
+                      onTap: () {
+                        _navigateToPathInformation(context, track);
+                      },
+                    ),
                   );
                 }).toList(),
               ],
@@ -191,6 +230,74 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildProfileSection() {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Added padding to avoid overflow
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 30.0, left: 16.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Hello Marah",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10), // Space between text and profile image
+              Center(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/female.jpg'), // Path to profile image
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle edit profile button press
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: Text('Edit Profile'),
+                    ),
+                    SizedBox(height: 10), // Space between buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.location_on, color: Colors.black),
+                        SizedBox(width: 5),
+                        Text(
+                          'Haifa',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

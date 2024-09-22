@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:stridesquad1/GroupAloneScreen.dart';
 
 class DifficultyLevelScreen extends StatefulWidget {
+  const DifficultyLevelScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _DifficultyLevelScreenState createState() => _DifficultyLevelScreenState();
 }
 
@@ -21,8 +24,8 @@ class _DifficultyLevelScreenState extends State<DifficultyLevelScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Spacer(flex: 1), // Adjust the flex value as needed
-            Text(
+            const Spacer(flex: 1), // Adjust the flex value as needed
+            const Text(
               'How would you describe your difficulty level?',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),

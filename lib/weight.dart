@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:animated_weight_picker/animated_weight_picker.dart';
-import 'age.dart';
+import 'age.dart'; // Replace 'age.dart' with the correct import if necessary
 
 class WeightSelectorScreen extends StatefulWidget {
+  final String gender;
+  final double height;
+  const WeightSelectorScreen({super.key, required this.gender, required this.height});
+
   @override
   _WeightSelectorScreenState createState() => _WeightSelectorScreenState();
 }
@@ -15,7 +19,7 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
   @override
   void initState() {
     super.initState();
-    selectedWeight = minWeight; // Ensure initial weight is set as a double
+    selectedWeight = minWeight;
   }
 
   @override
@@ -35,26 +39,15 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
               const SizedBox(height: 20),
               CircleAvatar(
                 radius: 80,
-                backgroundImage: const AssetImage(
-                    'assets/female.png'), // Ensure you have this asset
+                backgroundImage: AssetImage('assets/${widget.gender.toLowerCase()}.png'),
                 backgroundColor: Colors.grey[200],
               ),
               const SizedBox(height: 40),
-              const Text(
-                'Weight',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
+              const Text('Weight', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text(
-                'Please choose your weight',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
+              const Text('Please choose your weight', style: TextStyle(fontSize: 16, color: Colors.grey)),
               const SizedBox(height: 10),
-              Text(
-                '${selectedWeight.toStringAsFixed(1)} kg',
-                style:
-                    const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-              ),
+              Text('${selectedWeight.toStringAsFixed(1)} kg', style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold)),
               const SizedBox(height: 5),
               SizedBox(
                 height: 200,
@@ -63,8 +56,7 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
                   max: maxWeight,
                   onChange: (newValue) {
                     setState(() {
-                      selectedWeight = double.tryParse(newValue.toString()) ??
-                          selectedWeight;
+                      selectedWeight = double.tryParse(newValue.toString()) ?? selectedWeight;
                     });
                   },
                 ),
@@ -75,15 +67,13 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                       Navigator.push(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const DatePickerScreen()),
+                            builder: (context) => DatePickerScreen(gender: widget.gender, height: widget.height, weight: selectedWeight)),
                       );
                     },
-                    child: const Text('Continue',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: const Text('Continue', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       backgroundColor: Color.fromARGB(255, 138, 252, 154),
@@ -96,11 +86,9 @@ class _WeightSelectorScreenState extends State<WeightSelectorScreen> {
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
-                         Navigator.pop(context); // Go back to the previous screen
+                      Navigator.pop(context);
                     },
-                    child: const Text('Previous',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: const Text('Previous', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       backgroundColor: Color.fromARGB(255, 255, 255, 255),

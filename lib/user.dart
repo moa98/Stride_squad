@@ -5,9 +5,11 @@ class UserModel {
   String password;
   double distanceGoal;
   String gender;
-  String fitness_level; 
+  String fitnessLevel; 
   int dateOfBirth;
   String imageUrl;
+  String height;
+  String weight;
 
   UserModel({
     required this.uid,
@@ -16,9 +18,11 @@ class UserModel {
     required this.password,
     required this.distanceGoal,
     required this.gender,
-    required this.fitness_level,
+    required this.fitnessLevel,
     required this.dateOfBirth,
     required this.imageUrl,
+    required this.height,
+    required this.weight
   });
 
   // Convert a UserModel to a map
@@ -30,9 +34,11 @@ class UserModel {
       'password': password, 
       'distanceGoal': distanceGoal,
       'gender': gender,
-      'fitness_level': fitness_level,
+      'fitness_level': fitnessLevel,
       'dateOfBirth': dateOfBirth,
       'imageUrl': imageUrl,
+      'height' : height,
+      'weight' : weight,
     };
   }
 
@@ -45,9 +51,11 @@ class UserModel {
       password: map['password'], // added missing fields
       distanceGoal: map['distanceGoal'],
       gender: map['gender'],
-      fitness_level: map['fitness_level'],
+      fitnessLevel: map['fitness_level'],
       dateOfBirth: map['dateOfBirth'],
       imageUrl: map['imageUrl'],
+      height: map['height'],
+      weight: map['weight']
     );
   }
 }

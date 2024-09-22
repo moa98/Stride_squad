@@ -20,7 +20,7 @@ class _GenderSelectScreenState extends State<GenderSelectScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(imagePath, height: 150), // Adjust height as necessary
+            Image.asset(imagePath, height: 150), 
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(gender, style: const TextStyle(fontSize: 20)),
@@ -64,7 +64,8 @@ class _GenderSelectScreenState extends State<GenderSelectScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HeightScreen()),
+                                builder: (context) => HeightScreen(gender: selectedGender!),
+                            ),
                           );
                         }
                       : null,
@@ -89,7 +90,7 @@ class _GenderSelectScreenState extends State<GenderSelectScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HeightScreen()),
+                          builder: (context) => const HeightScreen(gender: '')),
                     );
                   },
                   child: const Text('Skip',

@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'weight.dart'; // Ensure this import is correct
 
 class HeightScreen extends StatefulWidget {
-  const HeightScreen({super.key});
+  final String gender;
+  const HeightScreen({super.key, required this.gender});
 
   @override
   State<HeightScreen> createState() => _HeightScreenState();
@@ -66,8 +67,11 @@ class _HeightScreenState extends State<HeightScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          WeightSelectorScreen()), // Ensure WeightSelectorScreen is implemented
+                    builder: (context) => WeightSelectorScreen(
+                      gender: widget.gender,
+                      height: _currentHeight,
+                    ),
+                  ),
                 );
               },
               child: const Text('Continue',

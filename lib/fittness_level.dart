@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'signup_page.dart';  // Make sure this import is correct for your project
+import 'package:intl/intl.dart'; // Add this import to use DateFormat
+import 'signup_page.dart'; // Make sure this import is correct for your project
 
 class FitnessLevelPage extends StatefulWidget {
   final String gender;
@@ -22,6 +23,18 @@ class FitnessLevelPage extends StatefulWidget {
 class _FitnessLevelPageState extends State<FitnessLevelPage> {
   String selectedFitnessLevel = '';
 
+  int calculateAge(String dob) {
+    DateTime birthDate = DateFormat('yyyy-MM-dd').parse(dob);
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month &&
+            currentDate.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
+
   Widget fitnessLevelButton(String level, String description) {
     bool isSelected = selectedFitnessLevel == level;
     return GestureDetector(
@@ -35,7 +48,9 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
         padding: EdgeInsets.all(16.0),
         constraints: BoxConstraints(minWidth: double.infinity, minHeight: 80),
         decoration: BoxDecoration(
-          color: isSelected ? Color.fromARGB(255, 138, 252, 154) : Colors.grey[200],
+          color: isSelected
+              ? Color.fromARGB(255, 138, 252, 154)
+              : Colors.grey[200],
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: isSelected
               ? [
@@ -76,6 +91,7 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
 
   @override
   Widget build(BuildContext context) {
+    int age = calculateAge(widget.dateOfBirth);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Fitness Level'),
@@ -87,9 +103,29 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
           children: [
             Spacer(flex: 1),
             Text(
-              'How would you describe your fitness level?',
+              'User Information:',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+            ),
+            Text(
+              'Gender: ${widget.gender}',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Height: ${widget.height} cm',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Weight: ${widget.weight} kg',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Age: $age years',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
             fitnessLevelButton(
@@ -108,18 +144,22 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: ElevatedButton(
-                onPressed: selectedFitnessLevel.isEmpty ? null : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignUpPage(),  // Ensure this route is correctly implemented
-                    ),
-                  );
-                },
+                onPressed: selectedFitnessLevel.isEmpty
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SignUpPage(), // Ensure this route is correctly implemented
+                          ),
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 138, 252, 154),
                   padding: EdgeInsets.symmetric(horizontal: 120, vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0)),
                 ),
                 child: const Text(
                   'Continue',

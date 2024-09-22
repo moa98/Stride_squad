@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
-import 'HomePage.dart'; // Import the HomePage
+import 'package:firebase_auth/firebase_auth.dart';
+import 'HomePage.dart';
 
 class SignUpPage extends StatefulWidget {
+  final String gender;
+  final double height;
+  final double weight;
+  final String dateOfBirth;
+  final String fitnessLevel;
+
+  const SignUpPage({
+    super.key,
+    required this.gender,
+    required this.height,
+    required this.weight,
+    required this.dateOfBirth,
+    required this.fitnessLevel,
+  });
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -11,26 +27,50 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  void _signUp() {
+  Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Navigate to HomePage on successful sign-up (simulate sign-up for this example)
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        // Assuming successful signup, create user model
+        UserModel newUser = UserModel(
+          uid: userCredential.user!.uid,
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          distanceGoal: 0.0, // Default or ask user to set this
+          gender: widget.gender,
+          fitnessLevel: widget.fitnessLevel,
+          dateOfBirth: int.parse(widget.dateOfBirth), // Make sure to handle date correctly
+          imageUrl: '', // Default or let user upload an image
+          height: widget.height.toString(),
+          weight: widget.weight.toString(),
+        );
+        // Save newUser to Firestore or another database
+        // Navigate to HomePage or success page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } catch (e) {
+        print("Failed to sign up: $e");
+        // Handle errors or show an alert dialog
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      appBar: AppBar(title: Text("Sign Up"), centerTitle: true),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -39,175 +79,54 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text('Sign Up to StrideSquad', textAlign: TextAlign.center, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
-                Text(
-                  'Create Account',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Full Name', border: OutlineInputBorder()),
+                  validator: (value) => value != null && value.isNotEmpty ? null : 'Name is required',
                 ),
-                SizedBox(height: 10),
-                SizedBox(height: 20),
-                Text(
-                  'Enter your email',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                SizedBox(height: 10),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: 'Email address',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
+                  decoration: InputDecoration(labelText: 'Email Address', border: OutlineInputBorder()),
+                  validator: (value) => value != null && value.isNotEmpty ? null : 'Email is required',
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Enter your username',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                SizedBox(height: 10),
                 TextFormField(
                   controller: _userNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Username',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
+                  decoration: InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
+                  validator: (value) => value != null && value.isNotEmpty ? null : 'Username is required',
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Enter your password',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value != null && value.isNotEmpty ? null : 'Password is required',
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Confirm password',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                SizedBox(height: 10),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
                   decoration: InputDecoration(
-                    hintText: 'Confirm password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
+                    labelText: 'Confirm Password',
+                    border: OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureConfirmPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
-                        });
-                      },
+                      icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                     ),
                   ),
-                  validator: (value) {
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == _passwordController.text ? null : 'Passwords do not match',
                 ),
-                SizedBox(height: 30),
-                SizedBox(
-                  height: 50,
-                ), // Spacer added here
                 ElevatedButton(
                   onPressed: _signUp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Color.fromARGB(255, 138, 252, 154), // Green background
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                  ),
-                  child: Text(
-                    'Sign up',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 106, 63, 156), // Purple text
-                    ),
-                  ),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                  child: Text('Sign Up', style: TextStyle(fontSize: 16)),
                 ),
-                SizedBox(height: 20),
               ],
             ),
           ),

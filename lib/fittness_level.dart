@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Add this import to use DateFormat
-import 'signup_page.dart'; // Make sure this import is correct for your project
+import 'package:intl/intl.dart';
+import 'signup_page.dart';  // Ensure this import is correct
 
 class FitnessLevelPage extends StatefulWidget {
   final String gender;
@@ -28,8 +28,7 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
     DateTime currentDate = DateTime.now();
     int age = currentDate.year - birthDate.year;
     if (currentDate.month < birthDate.month ||
-        (currentDate.month == birthDate.month &&
-            currentDate.day < birthDate.day)) {
+        (currentDate.month == birthDate.month && currentDate.day < birthDate.day)) {
       age--;
     }
     return age;
@@ -48,19 +47,15 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
         padding: EdgeInsets.all(16.0),
         constraints: BoxConstraints(minWidth: double.infinity, minHeight: 80),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Color.fromARGB(255, 138, 252, 154)
-              : Colors.grey[200],
+          color: isSelected ? Color.fromARGB(255, 138, 252, 154) : Colors.grey[200],
           borderRadius: BorderRadius.circular(12.0),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Color.fromARGB(255, 138, 252, 154).withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ]
-              : [],
+          boxShadow: isSelected ? [
+            BoxShadow(
+              color: Color.fromARGB(255, 138, 252, 154).withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+            ),
+          ] : [],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -92,6 +87,7 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
   @override
   Widget build(BuildContext context) {
     int age = calculateAge(widget.dateOfBirth);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Fitness Level'),
@@ -150,16 +146,20 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                SignUpPage(), // Ensure this route is correctly implemented
+                            builder: (context) => SignUpPage(
+                              gender: widget.gender,
+                              height: widget.height,
+                              weight: widget.weight,
+                              dateOfBirth: widget.dateOfBirth,
+                              fitnessLevel: selectedFitnessLevel,
+                            ),
                           ),
                         );
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 138, 252, 154),
                   padding: EdgeInsets.symmetric(horizontal: 120, vertical: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                 ),
                 child: const Text(
                   'Continue',

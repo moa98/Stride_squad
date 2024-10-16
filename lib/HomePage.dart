@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'DifficultyLevel.dart';
@@ -5,7 +6,7 @@ import 'InformationAboutPath.dart';
 import 'track.dart';
 
 class HomePage extends StatefulWidget {
-  final String userName; // Add this field to accept the user's name
+  final String userName; // Accept the user's name
 
   const HomePage({Key? key, required this.userName}) : super(key: key);
 
@@ -14,24 +15,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> friends = ["Alice", "Bob", "Charlie"];
   List<Track> tracks = [];
 
   @override
   void initState() {
     super.initState();
-    fetchTracks();
+    print("Initializing HomePage state...");
+    fetchUserTracks();
   }
 
-  Future<void> fetchTracks() async {
+  Future<void> fetchUserTracks() async {
+    print("fetchUserTracks called"); // Check if this gets printed
     try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('tracks').get();
-      setState(() {
-        tracks = snapshot.docs.map((doc) => Track.fromFirestore(doc)).toList();
-      });
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      print("Current User ID: $userId");
+
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userDoc.exists) {
+        List<dynamic> trackIds = userDoc['trackIds'] ?? [];
+        print("Track IDs from User Document: $trackIds");
+
+        if (trackIds.isNotEmpty) {
+          QuerySnapshot trackSnapshot = await FirebaseFirestore.instance
+              .collection('tracks')
+              .where('pathId', whereIn: trackIds)
+              .get();
+          List<Track> userTracks = trackSnapshot.docs
+              .map((doc) => Track.fromFirestore(doc))
+              .toList();
+          print("Tracks Fetched: ${userTracks.length}");
+
+          setState(() {
+            tracks = userTracks;
+          });
+        } else {
+          setState(() {
+            tracks = [];
+          });
+        }
+      }
     } catch (e) {
-      print(e);
+      print('Error fetching user tracks: $e');
     }
   }
 
@@ -138,26 +165,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _navigateToDifficultyLevelScreen(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: const Color.fromARGB(255, 138, 252, 154),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 20),
-                      textStyle: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    child: const Text('Start Run'),
-                  ),
-                ),
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Align(
@@ -234,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Hello ${widget.userName}", // Display the user's name
+                    "Hello ${widget.userName}",
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -292,38 +299,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _addFriend() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String friendName = '';
-        return AlertDialog(
-          title: const Text('Add Friend'),
-          content: TextField(
-            onChanged: (value) {
-              friendName = value;
-            },
-            decoration: const InputDecoration(hintText: "Enter friend's name"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Add'),
-              onPressed: () {
-                setState(() {
-                  friends.add(friendName);
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // Code for adding a friend goes here
   }
 
   void _navigateToDifficultyLevelScreen(BuildContext context) {

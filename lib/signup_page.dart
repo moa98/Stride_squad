@@ -36,47 +36,51 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
- Future<void> _signUp() async {
-  if (_formKey.currentState?.validate() ?? false) {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      // Extract year from the date string
-      int yearOfBirth = DateTime.parse(widget.dateOfBirth).year;
+  Future<void> _signUp() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        // Extract year from the date string
+        int yearOfBirth = DateTime.parse(widget.dateOfBirth).year;
 
-      // Assuming successful signup, create user model
-      UserModel newUser = UserModel(
-        uid: userCredential.user!.uid,
-        name: _nameController.text,
-        email: _emailController.text,
-        password: _passwordController.text, // Consider not storing passwords in Firestore
-        distanceGoal: 0.0, // Default or ask user to set this
-        gender: widget.gender,
-        fitnessLevel: widget.fitnessLevel,
-        dateOfBirth: yearOfBirth, // Store only the year
-        imageUrl: '', // Default or let user upload an image
-        height: widget.height.toString(),
-        weight: widget.weight.toString(),
-      );
-      // Save newUser to Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(newUser.uid)
-          .set(newUser.toMap());
-
-      // Navigate to HomePage or success page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    } catch (e) {
-      print("Failed to sign up: $e");
-      // Handle errors or show an alert dialog
+        // Assuming successful signup, create user model
+        UserModel newUser = UserModel(
+          uid: userCredential.user!.uid,
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController
+              .text, // Consider not storing passwords in Firestore
+          distanceGoal: 0.0, // Default or ask user to set this
+          gender: widget.gender,
+          fitnessLevel: widget.fitnessLevel,
+          dateOfBirth: yearOfBirth, // Store only the year
+          imageUrl: '', // Default or let user upload an image
+          height: widget.height.toString(),
+          weight: widget.weight.toString(),
+        );
+        // Save newUser to Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(newUser.uid)
+            .set(newUser.toMap());
+        print("User Name: ${_nameController.text}");
+        // Navigate to HomePage or success page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(userName: _nameController.text),
+          ),
+        );
+      } catch (e) {
+        print("Failed to sign up: $e");
+        // Handle errors or show an alert dialog
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {

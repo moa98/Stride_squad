@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'HomePage.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final Auth auth = Auth(); // Create an instance of Auth class
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class LoginPage extends StatelessWidget {
                         controller: emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                               fontSize: 20), // Increased label font size
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
@@ -57,7 +58,7 @@ class LoginPage extends StatelessWidget {
                         controller: passwordController,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                               fontSize: 20), // Increased label font size
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
@@ -78,35 +79,66 @@ class LoginPage extends StatelessWidget {
                     vertical: 20), // Added padding to bottom
                 child: ElevatedButton(
                   onPressed: () async {
-                    String email = emailController.text;
-                    String password = passwordController.text;
+                    String email = emailController.text.trim();
+                    String password = passwordController.text.trim();
 
                     try {
-                      await auth.signInwithEmailAndPassword(
+                      // Sign in with Firebase Authentication
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .signInWithEmailAndPassword(
                         email: email,
                         password: password,
                       );
-                      Navigator.pushReplacementNamed(context, '/home');
+
+                      // Get the user's UID
+                      String uid = userCredential.user!.uid;
+
+                      // Retrieve the user's name from Firestore
+                      DocumentSnapshot userDoc = await FirebaseFirestore
+                          .instance
+                          .collection('users')
+                          .doc(uid)
+                          .get();
+
+                      // Extract the user's name from the document
+                      String userName = userDoc['name'] ?? 'User';
+
+                      // Navigate to HomePage and pass the user's name
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(userName: userName),
+                        ),
+                      );
                     } catch (e) {
+                      // Show error message on failure
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to log in: $e')),
+                        SnackBar(
+                          content: Text('Failed to log in: ${e.toString()}'),
+                          backgroundColor: Colors.redAccent,
+                        ),
                       );
                     }
                   },
                   child: const Text(
                     'Log In',
                     style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold), // Increased font size
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold, // Increased font size
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 138, 252, 154), // Styled like previous buttons
+                    backgroundColor: const Color.fromARGB(
+                        255, 138, 252, 154), // Styled like previous buttons
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(20), // Increased corner radius
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 140, vertical: 20), // Increased padding
+                      horizontal: 140,
+                      vertical: 20,
+                    ), // Increased padding
                   ),
                 ),
               ),

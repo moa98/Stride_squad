@@ -1,30 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'DifficultyLevel.dart';
 import 'InformationAboutPath.dart';
 import 'track.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'StrideSquad',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
 class HomePage extends StatefulWidget {
+  final String userName; // Add this field to accept the user's name
+
+  const HomePage({Key? key, required this.userName}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -56,12 +40,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StrideSquad'),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255), // Darker green color
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person_add),
             onPressed: _addFriend,
-            iconSize: 35, // Making the icon larger
+            iconSize: 35,
           ),
         ],
       ),
@@ -76,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.blueAccent,
-                    Color.fromARGB(255, 156, 221, 95)
+                    Color.fromARGB(255, 156, 221, 95),
                   ],
                 ),
               ),
@@ -124,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 5,
                         blurRadius: 7,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
@@ -141,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                       LinearProgressIndicator(
                         value: 35 / 50,
                         backgroundColor: Colors.grey[300],
-                        color: Color.fromRGBO(35, 47, 62, 1), // Darker green color
+                        color: const Color.fromRGBO(35, 47, 62, 1),
                       ),
                       const SizedBox(height: 5),
                       const Text(
@@ -162,12 +146,14 @@ class _HomePageState extends State<HomePage> {
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Color.fromARGB(255, 138, 252, 154),
+                      backgroundColor: const Color.fromARGB(255, 138, 252, 154),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                      textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 20),
+                      textStyle: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     child: const Text('Start Run'),
                   ),
@@ -188,7 +174,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ...tracks.map((track) {
                   return Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -196,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: Image.asset(
-                          'assets/path.jpg', // Use the correct path to your asset image
+                          'assets/path.jpg',
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
@@ -210,7 +197,9 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: List.generate(5, (index) {
                               return Icon(
-                                index < track.popularity ? Icons.star : Icons.star_border,
+                                index < track.popularity
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: Colors.yellow,
                                 size: 16.0,
                               );
@@ -218,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      trailing: Icon(Icons.chevron_right),
+                      trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         _navigateToPathInformation(context, track);
                       },
@@ -237,16 +226,16 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Added padding to avoid overflow
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 30.0, left: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0, left: 16.0),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Hello Marah",
-                    style: TextStyle(
+                    "Hello ${widget.userName}", // Display the user's name
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -254,15 +243,16 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10), // Space between text and profile image
+              const SizedBox(height: 10),
               Center(
                 child: Column(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/female.jpg'), // Path to profile image
+                      backgroundImage: AssetImage(
+                          'assets/female.jpg'), // Path to profile image
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         // Handle edit profile button press
@@ -274,12 +264,12 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: Text('Edit Profile'),
+                      child: const Text('Edit Profile'),
                     ),
-                    SizedBox(height: 10), // Space between buttons
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.location_on, color: Colors.black),
                         SizedBox(width: 5),
                         Text(

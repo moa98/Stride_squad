@@ -309,11 +309,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _navigateToPathInformation(BuildContext context, Track selectedPath) {
+  void _navigateToPathInformation(BuildContext context, Track selectedTrack) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => InformationAboutPathScreen(path: selectedPath)),
+        builder: (context) => InformationAboutPathScreen(path: selectedTrack),
+      ),
     );
   }
 }

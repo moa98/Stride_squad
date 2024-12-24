@@ -8,7 +8,7 @@ import 'track.dart';
 class HomePage extends StatefulWidget {
   final String userName; // Accept the user's name
 
-  const HomePage({Key? key, required this.userName}) : super(key: key);
+  const HomePage({super.key, required this.userName});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StrideSquad'),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person_add),
@@ -154,7 +154,6 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: Colors.grey[300],
                         color: const Color.fromRGBO(35, 47, 62, 1),
                       ),
-                      const SizedBox(height: 5),
                       const Text(
                         "35 km done, 15 km left",
                         style: TextStyle(
@@ -163,6 +162,28 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DifficultyLevelScreen()), // This should refer to the widget, not a method
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  ),
+                  child: Text(
+                    'Start Run',
+                    style: TextStyle(fontSize: 18),
                   ),
                 ),
                 const Padding(
@@ -220,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -274,9 +295,9 @@ class _HomePageState extends State<HomePage> {
                       child: const Text('Edit Profile'),
                     ),
                     const SizedBox(height: 10),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.location_on, color: Colors.black),
                         SizedBox(width: 5),
                         Text(
@@ -300,13 +321,6 @@ class _HomePageState extends State<HomePage> {
 
   void _addFriend() {
     // Code for adding a friend goes here
-  }
-
-  void _navigateToDifficultyLevelScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => DifficultyLevelScreen()),
-    );
   }
 
   void _navigateToPathInformation(BuildContext context, Track selectedTrack) {

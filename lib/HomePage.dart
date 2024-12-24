@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'DifficultyLevel.dart';
+import 'GroupDetails.dart';
 import 'InformationAboutPath.dart';
 import 'track.dart';
 
@@ -70,8 +71,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.person_add),
-            onPressed: _addFriend,
+            icon: const Icon(Icons.group_add),
+            onPressed: _createGroup,
             iconSize: 35,
           ),
         ],
@@ -319,8 +320,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _addFriend() {
-    // Code for adding a friend goes here
+  void _createGroup() {
+    // Navigate to the GroupDetails page after the group is created or initialized
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            CreateGroupPage(), // Replace with your actual GroupDetails page
+      ),
+    );
   }
 
   void _navigateToPathInformation(BuildContext context, Track selectedTrack) {

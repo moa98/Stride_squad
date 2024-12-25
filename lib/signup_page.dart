@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/instance_manager.dart';
+import 'package:get/utils.dart';
+import 'package:stridesquad1/controller/auth_controller.dart';
 import 'package:stridesquad1/user.dart';
 import 'HomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,6 +36,8 @@ class _SignUpPageState extends State<SignUpPage> {
       TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
+  AuthController authController = Get.put(AuthController());
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -40,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         UserCredential userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            await authController.auth.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );

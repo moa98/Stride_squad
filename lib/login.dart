@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/instance_manager.dart';
+import 'package:stridesquad1/controller/auth_controller.dart';
 import 'HomePage.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -82,44 +86,8 @@ class LoginPage extends StatelessWidget {
                     String email = emailController.text.trim();
                     String password = passwordController.text.trim();
 
-                    try {
-                      // Sign in with Firebase Authentication
-                      UserCredential userCredential = await FirebaseAuth
-                          .instance
-                          .signInWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-
-                      // Get the user's UID
-                      String uid = userCredential.user!.uid;
-
-                      // Retrieve the user's name from Firestore
-                      DocumentSnapshot userDoc = await FirebaseFirestore
-                          .instance
-                          .collection('users')
-                          .doc(uid)
-                          .get();
-
-                      // Extract the user's name from the document
-                      String userName = userDoc['name'] ?? 'User';
-
-                      // Navigate to HomePage and pass the user's name
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(userName: userName),
-                        ),
-                      );
-                    } catch (e) {
-                      // Show error message on failure
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Failed to log in: ${e.toString()}'),
-                          backgroundColor: Colors.redAccent,
-                        ),
-                      );
-                    }
+                    authController.login(
+                        email: email, password: password, context: context);
                   },
                   child: const Text(
                     'Log In',

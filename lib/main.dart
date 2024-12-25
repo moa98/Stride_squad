@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stridesquad1/gender.dart';
 import 'package:stridesquad1/height.dart';
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
       statusBarIconBrightness: Brightness.dark, // dark text for status bar
     ));
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'StrideSquad',
       theme: ThemeData(
         primarySwatch: Colors.green,
@@ -37,12 +39,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/home',
       routes: {
         '/home': (context) => const MyHomePage(),
-
         '/login': (context) => LoginPage(),
         '/gender': (context) => const GenderSelectScreen(),
         '/height': (context) => const HeightScreen(gender: "Male"),
-        '/weight': (context) => const WeightSelectorScreen(gender: "Male", height: 175),
-        '/age': (context) => const DatePickerScreen(gender: "Male", height: 175, weight: 70),
+        '/weight': (context) =>
+            const WeightSelectorScreen(gender: "Male", height: 175),
+        '/age': (context) =>
+            const DatePickerScreen(gender: "Male", height: 175, weight: 70),
         '/fitness_level': (context) => const FitnessLevelPage(
             gender: "Male", height: 175, weight: 70, dateOfBirth: "1990-01-01"),
         '/signup': (context) => const SignUpPage(
@@ -115,7 +118,8 @@ class MyHomePage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.green[700],
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

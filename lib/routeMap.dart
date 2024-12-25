@@ -1,6 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class RouteMapScreen extends StatelessWidget {
+// ignore: must_be_immutable
+class RouteMapScreen extends StatefulWidget {
+  LatLng cityCenter;
+  List<LatLng> roadPoints;
+
+  RouteMapScreen({required this.cityCenter, required this.roadPoints});
+
+  @override
+  State<RouteMapScreen> createState() => _RouteMapScreenState();
+}
+
+class _RouteMapScreenState extends State<RouteMapScreen> {
+  late GoogleMapController mapController;
+
+  // Coordinates for Tel Aviv and a specific road
+  //final LatLng _cityCenter = LatLng(32.0853, 34.7818); // Tel Aviv Center
+
+  // final List<LatLng> _roadPoints = [
+  //   LatLng(32.0809, 34.7806),
+  //   LatLng(32.0812, 34.7815),
+  //   LatLng(32.0820, 34.7827),
+  //   LatLng(32.0832, 34.7841),
+  // ];
+
+  Set<Polyline> _polylines = {};
+  Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _createPolyline();
+    _addMarkers();
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  void _createPolyline() {
+    Polyline polyline = Polyline(
+      polylineId: PolylineId('roadPolyline'),
+      points: widget.roadPoints,
+      color: Colors.blue,
+      width: 5,
+    );
+
+    setState(() {
+      _polylines.add(polyline);
+    });
+  }
+
+  void _addMarkers() {
+    // Add a marker at the start of the road
+    Marker startMarker = Marker(
+      markerId: const MarkerId('start'),
+      position: widget.roadPoints.first,
+      infoWindow: const InfoWindow(
+        title: 'Start of Road',
+        snippet: 'Specific road in Tel Aviv',
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+    );
+
+    // Add a marker at the end of the road
+    Marker endMarker = Marker(
+      markerId: const MarkerId('end'),
+      position: widget.roadPoints.last,
+      infoWindow: const InfoWindow(
+        title: 'End of Road',
+        snippet: 'Specific road in Tel Aviv',
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+
+    setState(() {
+      _markers.add(startMarker);
+      _markers.add(endMarker);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,9 +97,14 @@ class RouteMapScreen extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
-                child: Image.asset(
-                  'assets/technion_1.png', // Update with the appropriate image path
-                  fit: BoxFit.contain,
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: widget.cityCenter,
+                    zoom: 14,
+                  ),
+                  polylines: _polylines, // Add polylines to the map
+                  markers: _markers, // Add markers to the map
                 ),
               ),
             ),
@@ -39,15 +124,16 @@ class UserInfoSection extends StatelessWidget {
       padding: EdgeInsets.all(16),
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 30,
-            backgroundImage: AssetImage('assets/female.jpg'), // Add your image asset here
+            backgroundImage:
+                AssetImage('assets/female.jpg'), // Add your image asset here
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'My Route',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -108,7 +194,8 @@ class StatItem extends StatelessWidget {
       children: [
         Icon(icon, size: 28),
         SizedBox(height: 4),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(value,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }

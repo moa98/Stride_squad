@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:stridesquad1/controller/groups_controller.dart';
 
 class CreateGroupPage extends StatefulWidget {
   @override
@@ -9,7 +11,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   final _formKey = GlobalKey<FormState>();
   String groupName = '';
   String groupDescription = '';
+  String participants = '';
+
   DateTime selectedDateTime = DateTime.now();
+
+  GroupsController groupsController = Get.put(GroupsController());
 
   Future<void> _selectDateTime(BuildContext context) async {
     // Step 1: Select Date
@@ -88,24 +94,31 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               ),
               buildLabeledFormField('Group Name', 'Please enter group name'),
               SizedBox(height: 20),
+
+              buildLabeledFormField(
+                  'No of Participants', 'Please enter no of participants'),
+              SizedBox(height: 20),
               buildLabeledFormField('Description', 'Please enter a description',
                   isDescription: true),
               SizedBox(height: 20),
-              buildDateTimeSelector(context),
-              SizedBox(height: 30),
+              // buildDateTimeSelector(context),
+              // SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      // Handle data submission or navigation here
+                      groupsController.createGroup(
+                          title: groupName,
+                          description: groupDescription,
+                          numberOfParticepent: participants);
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(
+                    backgroundColor: const Color.fromARGB(
                         255, 199, 255, 135), // Light green background
                     foregroundColor: Colors.black, // Text color
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                         horizontal: 100, vertical: 20), // Button size
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -113,7 +126,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     ),
                     elevation: 0, // Remove shadow for a flat look
                   ),
-                  child: Text(
+                  child: const Text(
                     'Create Group',
                     style: TextStyle(
                       fontSize: 16,
@@ -146,6 +159,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         TextFormField(
           maxLines:
               isDescription ? 5 : 1, // Allow multiple lines for description
+
+          keyboardType:
+              label == 'No of Participants' ? TextInputType.number : null,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -164,6 +180,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               groupName = value!;
             } else if (label == 'Description') {
               groupDescription = value!;
+            } else if (label == 'No of Participants') {
+              participants = value!;
             }
           },
         ),

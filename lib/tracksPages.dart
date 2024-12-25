@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stridesquad1/routeMap.dart';
 import 'DifficultyLevel.dart';
 import 'InformationAboutPath.dart';
@@ -32,12 +33,12 @@ class _TracksPageState extends State<TracksPage> {
     }
   }
 
-  void _navigateToRouteMapScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RouteMapScreen()),
-    );
-  }
+  // void _navigateToRouteMapScreen(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => RouteMapScreen()),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +108,7 @@ class _TracksPageState extends State<TracksPage> {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/female.jpg'),
+                        backgroundImage: AssetImage('assets/female.jpg'),
                         radius: 30,
                       ),
                       SizedBox(width: 10),
@@ -183,23 +183,126 @@ class _TracksPageState extends State<TracksPage> {
                   ),
                 ),
                 // Popular Paths Section
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     'Popular',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                ...tracks.map((track) {
-                  return PopularPathCard(
-                    imagePath:
-                        'assets/path.jpg', // Update with appropriate image path
-                    title: track.Name,
-                    location: "${track.length} km",
-                    rating: track.popularity, // Update with actual rating if available
-                    onTap: () => _navigateToRouteMapScreen(context),
-                  );
-                }).toList(),
+                // ...tracks.map((track) {
+                //   return PopularPathCard(
+                //     imagePath:
+                //         'assets/path.jpg', // Update with appropriate image path
+                //     title: track.Name,
+                //     location: "${track.length} km",
+                //     rating: track
+                //         .popularity, // Update with actual rating if available
+                //     onTap: () => _navigateToRouteMapScreen(context),
+                //   );
+                // }).toList(),
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: tracks.length,
+                  itemBuilder: (context, index) {
+                    final track = tracks[index]; // Get the current track
+                    return PopularPathCard(
+                      imagePath:
+                          'assets/path.jpg', // Update with appropriate image path
+                      title: track.Name,
+                      location: "${track.length} km",
+                      rating: track
+                          .popularity, // Update with actual rating if available
+                      onTap: () {
+                        if (index == 0) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(
+                                      cityCenter: LatLng(32.0853, 34.7818),
+                                      roadPoints: [
+                                        LatLng(32.0809, 34.7806),
+                                        LatLng(32.0812, 34.7815),
+                                        LatLng(32.0820, 34.7827),
+                                        LatLng(32.0832, 34.7841),
+                                      ],
+                                    )),
+                          );
+                        } else if (index == 1) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(
+                                        cityCenter:
+                                            const LatLng(31.7683, 35.2137),
+                                        roadPoints: const [
+                                          LatLng(31.7693,
+                                              35.2127), // Start point of the road
+                                          LatLng(
+                                              31.7695, 35.2135), // Midpoint 1
+                                          LatLng(
+                                              31.7700, 35.2143), // Midpoint 2
+                                          LatLng(31.7705,
+                                              35.2151), // End point of the road
+                                        ])),
+                          );
+                        } else if (index == 2) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(
+                                        cityCenter:
+                                            const LatLng(32.0652, 34.7768),
+                                        roadPoints: const [
+                                          LatLng(32.0646,
+                                              34.7760), // Start point of the road
+                                          LatLng(
+                                              32.0650, 34.7763), // Midpoint 1
+                                          LatLng(
+                                              32.0655, 34.7766), // Midpoint 2
+                                          LatLng(32.0660,
+                                              34.7770), // End point of the road
+                                        ])),
+                          );
+                        } else if (index == 3) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(
+                                        cityCenter:
+                                            const LatLng(32.0656, 34.7768),
+                                        roadPoints: [
+                                          LatLng(32.0656,
+                                              34.7756), // Start of Rothschild Boulevard
+                                          LatLng(
+                                              32.0660, 34.7762), // Midpoint 1
+                                          LatLng(
+                                              32.0665, 34.7770), // Midpoint 2
+                                          LatLng(32.0670,
+                                              34.7778), // End of Rothschild Boulevard
+                                        ])),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RouteMapScreen(
+                                      cityCenter: LatLng(32.0853, 34.7818),
+                                      roadPoints: [
+                                        LatLng(32.0809, 34.7806),
+                                        LatLng(32.0812, 34.7815),
+                                        LatLng(32.0820, 34.7827),
+                                        LatLng(32.0832, 34.7841),
+                                      ],
+                                    )),
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -271,7 +374,9 @@ class CategoryTab extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8.0),
       child: Chip(
         label: Text(label),
-        backgroundColor: isSelected ? const Color.fromARGB(255, 138, 252, 154) : Colors.grey[200],
+        backgroundColor: isSelected
+            ? const Color.fromARGB(255, 138, 252, 154)
+            : Colors.grey[200],
         labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
       ),
     );
@@ -343,7 +448,8 @@ class PopularPathCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Row(
             children: [
               ClipRRect(

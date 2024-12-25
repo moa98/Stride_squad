@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stridesquad1/NatureCityPage.dart';
+import 'package:stridesquad1/group_page.dart';
 
 class GroupAloneScreen extends StatefulWidget {
   @override
@@ -47,12 +48,21 @@ class _GroupAloneScreenState extends State<GroupAloneScreen> {
                     onPressed: selectedOption.isEmpty
                         ? null
                         : () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NatureCityPage(),
-                              ),
-                            );
+                            if (selectedOption == 'Group') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupPage(),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NatureCityPage(),
+                                ),
+                              );
+                            }
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(
@@ -112,6 +122,7 @@ class _GroupAloneScreenState extends State<GroupAloneScreen> {
       onTap: () {
         setState(() {
           selectedOption = option;
+          print('selected option is  $selectedOption');
         });
       },
       child: Container(

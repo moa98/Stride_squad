@@ -39,11 +39,12 @@ dependencies:
   firebase_auth: ^5.1.0
   animated_weight_picker: ^1.0.0
   firebase_storage: ^12.1.0
-  google_maps_flutter: ^2.0.6
+  google_maps_flutter: ^2.10.0
   #location: ^4.3.0 #for location 
   geolocator: ^8.2.1 #for location
   image_picker: ^0.8.5+3
   video_player: ^2.2.14
+  get: ^4.6.6
 
 
 

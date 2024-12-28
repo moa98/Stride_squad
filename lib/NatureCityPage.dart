@@ -31,14 +31,14 @@ class _NatureCityPageState extends State<NatureCityPage> {
             optionButton(
               'Nature',
               'Experience the tranquility of natural surroundings.',
-              'assets/nature.jpg', 
+              'assets/nature.jpg',
             ),
             optionButton(
               'City',
               'Enjoy the energy of an urban environment.',
-              'assets/city.jpg', 
+              'assets/city.jpg',
             ),
-            Spacer(flex: 2), 
+            Spacer(flex: 2),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Column(
@@ -48,13 +48,27 @@ class _NatureCityPageState extends State<NatureCityPage> {
                         ? null
                         : () {
                             print('Selected option: $selectedOption');
-                            // Navigate to the RouteMapScreen
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TracksPage(),
-                              ),
-                            );
+
+                            print('is selected option $selectedOption');
+                            if (selectedOption == 'Nature') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TracksPage(
+                                    isCity: false,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TracksPage(
+                                    isCity: true,
+                                  ),
+                                ),
+                              );
+                            }
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(

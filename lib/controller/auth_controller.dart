@@ -21,6 +21,8 @@ class AuthController extends GetxController {
     super.onInit();
   }
 
+  RxString name = ''.obs;
+
   Future<void> login(
       {required String email,
       required String password,
@@ -41,7 +43,7 @@ class AuthController extends GetxController {
 
       // Extract the user's name from the document
       String userName = userDoc['name'] ?? 'User';
-
+      name.value = userDoc['name'] ?? 'User';
       // Navigate to HomePage and pass the user's name
       Navigator.pushReplacement(
         context,

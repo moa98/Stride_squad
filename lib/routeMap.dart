@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:stridesquad1/track.dart';
+import 'package:stridesquad1/user.dart';
 
 // ignore: must_be_immutable
 class RouteMapScreen extends StatefulWidget {
   LatLng cityCenter;
   List<LatLng> roadPoints;
+  Track track;
 
-  RouteMapScreen({required this.cityCenter, required this.roadPoints});
+  RouteMapScreen(
+      {required this.cityCenter,
+      required this.roadPoints,
+      required this.track});
 
   @override
   State<RouteMapScreen> createState() => _RouteMapScreenState();
@@ -90,7 +96,9 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
       ),
       body: Column(
         children: [
-          UserInfoSection(),
+          UserInfoSection(
+            track: widget.track,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -109,7 +117,9 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
               ),
             ),
           ),
-          RouteStatsSection(),
+          RouteStatsSection(
+            track: widget.track,
+          ),
         ],
       ),
     );
@@ -117,6 +127,8 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
 }
 
 class UserInfoSection extends StatelessWidget {
+  UserInfoSection({required this.track});
+  Track track;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,9 +145,13 @@ class UserInfoSection extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'My Route',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: Text(
+                  maxLines: 1,
+                  track.Name,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
               Text(
                 'Running at Technion 1',
@@ -154,6 +170,8 @@ class UserInfoSection extends StatelessWidget {
 }
 
 class RouteStatsSection extends StatelessWidget {
+  RouteStatsSection({required this.track});
+  Track track;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -166,14 +184,14 @@ class RouteStatsSection extends StatelessWidget {
             style: TextStyle(color: Colors.grey[600]),
           ),
           Text(
-            '00:12:44',
+            '00:${track.time}:00',
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              StatItem(icon: Icons.directions_run, value: '0.9 km'),
+              StatItem(icon: Icons.directions_run, value: track.distance),
             ],
           ),
         ],

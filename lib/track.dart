@@ -16,9 +16,15 @@ class Track {
   final int Likes; // Added
   final int dislikes; // Added
   final String informationPath; // Added
+  final String distance;
+  final String time;
+  final String url;
+  final bool isCity;
 
   Track(
-      {required this.pathId,
+      {required this.distance,
+      required this.time,
+      required this.pathId,
       required this.Name,
       required this.startingPoint,
       required this.finishPoint,
@@ -32,28 +38,34 @@ class Track {
       required this.media,
       required this.Likes, // Added
       required this.dislikes, // Added
-      required this.informationPath // Added
-      });
+      required this.informationPath, // Added,
+      required this.isCity,
+      required this.url});
 
   factory Track.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Track(
-        pathId: data['pathId'] ?? '',
-        Name: data['Name'] ?? '',
-        startingPoint: data['startingPoint'] ?? '',
-        finishPoint: data['finishPoint'] ?? '',
-        length: _toInt(data['length']),
-        popularity: _toInt(data['popularity']),
-        difficultyStars: _toInt(data['difficultyStars']),
-        cleanStars: _toInt(data['cleanStars']),
-        incline: _toInt(data['incline']),
-        safety: _toInt(data['safety']),
-        reviews: List<String>.from(data['reviews'] ?? []),
-        media: List<String>.from(data['media'] ?? []),
-        Likes: _toInt(data['Likes']), // Added
-        dislikes: _toInt(data['dislikes']), // Added
-        informationPath: data['informationPath'] ?? '' // Added
-        );
+      isCity: data['CityOrNature'],
+      pathId: data['pathId'] ?? '',
+      url: data['imageURL'] ??
+          'https://firebasestorage.googleapis.com/v0/b/stride-squad-1eab7.appspot.com/o/istockphoto-495902924-612x612.jpg?alt=media&token=ce73dddb-7d93-4f5e-95ed-641f10f9377d',
+      Name: data['Name'] ?? '',
+      startingPoint: data['startingPoint'] ?? '',
+      finishPoint: data['finishPoint'] ?? '',
+      length: _toInt(data['length']),
+      popularity: _toInt(data['popularity']),
+      difficultyStars: _toInt(data['difficultyStars']),
+      cleanStars: _toInt(data['cleanStars']),
+      incline: _toInt(data['incline']),
+      safety: _toInt(data['safety']),
+      reviews: List<String>.from(data['reviews'] ?? []),
+      media: List<String>.from(data['media'] ?? []),
+      Likes: _toInt(data['Likes']), // Added
+      dislikes: _toInt(data['dislikes']), // Added
+      informationPath: data['informationPath'] ?? '', // Added
+      distance: data['distance'] ?? '',
+      time: data['time'] ?? '',
+    );
   }
 
   Map<String, dynamic> toFirestore() {

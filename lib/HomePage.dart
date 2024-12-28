@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'DifficultyLevel.dart';
 import 'GroupDetails.dart';
 import 'InformationAboutPath.dart';
@@ -22,7 +24,47 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     print("Initializing HomePage state...");
+    _getCurrentLocation();
     fetchUserTracks();
+  }
+
+  String address = 'Fetching address...';
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check for permissions
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.deniedForever) {
+          setState(() {
+            address = 'Location permissions are permanently denied.';
+          });
+          return;
+        }
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get address from coordinates
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      Placemark place = placemarks.first;
+
+      setState(() {
+        address =
+            '${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+      });
+    } catch (e) {
+      setState(() {
+        address = 'Error fetching location: $e';
+      });
+    }
   }
 
   Future<void> fetchUserTracks() async {
@@ -296,16 +338,22 @@ class _HomePageState extends State<HomePage> {
                       child: const Text('Edit Profile'),
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.location_on, color: Colors.black),
                         SizedBox(width: 5),
-                        Text(
-                          'Haifa',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
+                        SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.85,
+                          child: Text(
+                            address,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],

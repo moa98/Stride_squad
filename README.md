@@ -1,16 +1,30 @@
-# stridesquad1
+ Stride Squad
+Stride Squad is a smart and social fitness app designed to enhance your running experience. Whether you're a solo runner or prefer hitting the track with friends, Stride Squad suggests the best routes and tracks near you — tailored to your location, fitness level, and preferences.
 
-A new Flutter project.
+ Features
+Smart Route Suggestions
+Get personalized running routes based on your current location, desired distance, terrain, and difficulty level.
 
-## Getting Started
+Solo or Social Runs
+Choose to run alone or invite friends for a shared fitness experience. Stride Squad makes it easy to coordinate group runs.
 
-This project is a starting point for a Flutter application.
+Track Discovery
+Discover nearby tracks and trails, with details like surface type, popularity, and user ratings.
 
-A few resources to get you started if this is your first Flutter project:
+Location-Based Recommendations
+Using GPS, the app recommends routes that are safe, scenic, and well-suited to your training goals.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Fitness Tailoring
+Stride Squad adjusts its recommendations based on your age, fitness level, and running history.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ Tech Stack
+Frontend: Flutter
+
+Backend: Firebase 
+
+Location Services: Google Maps API and Geolocation API
+
+Database: Firestore 
+
+
+
